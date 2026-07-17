@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, type ReactNode }
 import { loginMobile, logoutMobile, me } from '../api/auth'
 import { setOnLogout } from '../api/client'
 import { getAccessToken, type SessionUser } from '../lib/secureStore'
+import { desregistrarPush, registrarPush } from '../lib/push'
 import { connectSocket, disconnectSocket } from '../lib/socket'
 
 type AuthState = {
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const { user: u } = await me()
           setUser(u)
           await connectSocket()
+          registrarPush()
         }
       } catch {
         setUser(null)
@@ -44,9 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const u = await loginMobile(email, senha)
     setUser(u)
     await connectSocket()
+    registrarPush()
   }
 
   async function sair() {
+    await desregistrarPush()
     await logoutMobile()
     disconnectSocket()
     setUser(null)
