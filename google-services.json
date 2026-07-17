@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "428744080845",
+    "project_id": "omnix360-2f5db",
+    "storage_bucket": "omnix360-2f5db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428744080845:android:3a2c7bb3180223691e5884",
+        "android_client_info": {
+          "package_name": "br.com.omnix360.atendimento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_LKWEfgbUcskJrIR9l2YTjKhked4ctO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

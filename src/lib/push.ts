@@ -1,5 +1,4 @@
 import { Platform } from 'react-native'
-import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
 import { apiFetch } from '../api/client'
 
@@ -32,10 +31,9 @@ export async function registrarPush(): Promise<void> {
     }
     if (status !== 'granted') return
 
-    const projectId =
-      (Constants.expoConfig?.extra as { eas?: { projectId?: string } })?.eas?.projectId
-    const resp = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined)
-    tokenAtual = resp.data
+    // Token NATIVO do device (FCM no Android) — o backend envia direto via FCM.
+    const resp = await Notifications.getDevicePushTokenAsync()
+    tokenAtual = resp.data as string
 
     await apiFetch('/push/register', {
       method: 'POST',
