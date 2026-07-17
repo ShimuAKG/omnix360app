@@ -1,26 +1,26 @@
 import { apiFetch } from './client'
 
+// Espelha a tabela `mensagens` do backend (routes/mensagens.js):
+// origem 'agente' = enviada pelo atendente (saída); demais = entrada do contato.
 export type Mensagem = {
   id: number
   conversa_id: number
   conteudo?: string
-  texto?: string
-  direcao?: 'entrada' | 'saida'
-  autor?: string
-  status?: string
-  criado_em?: string
+  origem?: string
   tipo?: string
+  status_envio?: string
+  enviado_em?: string
+  agente_id?: number | null
 }
 
 export const listarMensagens = (conversaId: number) =>
   apiFetch<Mensagem[]>(`/mensagens/${conversaId}`)
 
-// NOTA: confirmar o shape exato do corpo com o backend (routes/mensagens.js).
-// Mantido genérico para o MVP; ajustar quando validarmos o contrato.
-export const enviarMensagem = (conversaId: number, texto: string) =>
+// Contrato confirmado no backend: { conversa_id, conteudo, tipo }.
+export const enviarMensagem = (conversaId: number, conteudo: string) =>
   apiFetch<Mensagem>('/mensagens', {
     method: 'POST',
-    body: JSON.stringify({ conversa_id: conversaId, texto, conteudo: texto }),
+    body: JSON.stringify({ conversa_id: conversaId, conteudo, tipo: 'texto' }),
   })
 
 export const marcarLidas = (conversaId: number) =>
