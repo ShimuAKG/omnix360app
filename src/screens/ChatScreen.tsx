@@ -1,8 +1,11 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
+  Image,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -10,8 +13,19 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
+import * as DocumentPicker from 'expo-document-picker'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { listarMensagens, enviarMensagem, marcarLidas, type Mensagem } from '../api/mensagens'
+import {
+  listarMensagens,
+  enviarMensagem,
+  enviarArquivo,
+  marcarLidas,
+  midiaUrl,
+  nomeDocumento,
+  type ArquivoUpload,
+  type Mensagem,
+} from '../api/mensagens'
 import { getSocket } from '../lib/socket'
 import { theme } from '../theme'
 import type { AppStackParams } from '../navigation'
@@ -78,6 +92,56 @@ export default function ChatScreen({ route, navigation }: NativeStackScreenProps
     }
   }
 
+  async function anexar(file: ArquivoUpload) {
+    setEnviando(true)
+    try {
+      const nova = await enviarArquivo(conversaId, file)
+      setMensagens((prev) => [...prev, nova])
+    } catch (e) {
+      Alert.alert('Anexo', (e as Error).message)
+    } finally {
+      setEnviando(false)
+    }
+  }
+
+  async function escolherFoto() {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (!perm.granted) {
+      Alert.alert('Permissão', 'Permita o acesso às fotos para anexar imagens.')
+      return
+    }
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.8,
+    })
+    if (res.canceled || !res.assets?.[0]) return
+    const a = res.assets[0]
+    const ext = a.mimeType?.includes('png') ? '.png' : a.mimeType?.includes('webp') ? '.webp' : '.jpg'
+    await anexar({ uri: a.uri, name: a.fileName || `foto${ext}`, type: a.mimeType || 'image/jpeg' })
+  }
+
+  async function escolherDocumento() {
+    const res = await DocumentPicker.getDocumentAsync({
+      type: [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ],
+      copyToCacheDirectory: true,
+    })
+    if (res.canceled || !res.assets?.[0]) return
+    const a = res.assets[0]
+    await anexar({ uri: a.uri, name: a.name, type: a.mimeType || 'application/octet-stream' })
+  }
+
+  function abrirAnexoMenu() {
+    Alert.alert('Anexar', undefined, [
+      { text: 'Foto', onPress: escolherFoto },
+      { text: 'Documento', onPress: escolherDocumento },
+      { text: 'Cancelar', style: 'cancel' },
+    ])
+  }
+
   if (carregando) {
     return (
       <View style={styles.center}>
@@ -100,12 +164,31 @@ export default function ChatScreen({ route, navigation }: NativeStackScreenProps
         onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
         renderItem={({ item }) => (
           <View style={[styles.bolha, ehSaida(item) ? styles.saida : styles.entrada]}>
-            <Text style={styles.msgTxt}>{textoDe(item)}</Text>
+            {item.tipo === 'imagem' ? (
+              <Pressable onPress={() => Linking.openURL(midiaUrl(item.conteudo))}>
+                <Image source={{ uri: midiaUrl(item.conteudo) }} style={styles.imagem} resizeMode="cover" />
+              </Pressable>
+            ) : item.tipo === 'documento' ? (
+              <Pressable style={styles.doc} onPress={() => Linking.openURL(midiaUrl(item.conteudo))}>
+                <Text style={styles.docIcon}>📄</Text>
+                <Text style={styles.docTxt} numberOfLines={1}>{nomeDocumento(item.conteudo)}</Text>
+              </Pressable>
+            ) : item.tipo === 'audio' ? (
+              <Pressable style={styles.doc} onPress={() => Linking.openURL(midiaUrl(item.conteudo))}>
+                <Text style={styles.docIcon}>▶︎</Text>
+                <Text style={styles.docTxt}>Áudio</Text>
+              </Pressable>
+            ) : (
+              <Text style={styles.msgTxt}>{textoDe(item)}</Text>
+            )}
           </View>
         )}
       />
 
       <View style={styles.barra}>
+        <Pressable style={styles.clip} onPress={abrirAnexoMenu} disabled={enviando}>
+          <Text style={styles.clipTxt}>+</Text>
+        </Pressable>
         <TextInput
           style={styles.input}
           value={texto}
@@ -130,6 +213,21 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.bg },
   center: { flex: 1, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' },
   bolha: { maxWidth: '80%', borderRadius: 16, paddingHorizontal: 14, paddingVertical: 9 },
+  imagem: { width: 200, height: 200, borderRadius: 10 },
+  doc: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 2 },
+  docIcon: { fontSize: 18 },
+  docTxt: { color: theme.text, fontSize: 14, maxWidth: 180 },
+  clip: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.surface,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  clipTxt: { color: theme.textDim, fontSize: 24, fontWeight: '700', marginTop: -2 },
   entrada: { alignSelf: 'flex-start', backgroundColor: theme.surface },
   saida: { alignSelf: 'flex-end', backgroundColor: theme.purple },
   msgTxt: { color: theme.text, fontSize: 15, lineHeight: 20 },

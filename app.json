@@ -35,7 +35,14 @@
     "plugins": [
       "expo-secure-store",
       "expo-local-authentication",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O OmniX360 usa suas fotos para anexar imagens nas conversas.",
+          "cameraPermission": "O OmniX360 usa a câmera para enviar fotos nas conversas."
+        }
+      ]
     ],
     "extra": {
       "apiBaseUrl": "https://builder.omnix360.com.br",
