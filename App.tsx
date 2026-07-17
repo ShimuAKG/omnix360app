@@ -10,6 +10,7 @@ import LoginScreen from './src/screens/LoginScreen'
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import ConversasScreen from './src/screens/ConversasScreen'
 import ChatScreen from './src/screens/ChatScreen'
+import NovaConversaScreen from './src/screens/NovaConversaScreen'
 
 const AuthStack = createNativeStackNavigator<AuthStackParams>()
 const AppStack = createNativeStackNavigator<AppStackParams>()
@@ -47,6 +48,7 @@ function Rotas() {
     <AppStack.Navigator screenOptions={headerStyle}>
       <AppStack.Screen name="Conversas" component={ConversasScreen} options={{ title: 'Atendimento' }} />
       <AppStack.Screen name="Chat" component={ChatScreen} />
+      <AppStack.Screen name="NovaConversa" component={NovaConversaScreen} options={{ title: 'Nova conversa' }} />
     </AppStack.Navigator>
   ) : (
     <AuthStack.Navigator screenOptions={headerStyle}>

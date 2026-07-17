@@ -17,10 +17,10 @@ import { theme } from '../theme'
 import type { AppStackParams } from '../navigation'
 
 function ehSaida(m: Mensagem) {
-  return m.direcao === 'saida'
+  return m.origem === 'agente'
 }
 function textoDe(m: Mensagem) {
-  return m.conteudo ?? m.texto ?? ''
+  return m.conteudo ?? ''
 }
 
 export default function ChatScreen({ route, navigation }: NativeStackScreenProps<AppStackParams, 'Chat'>) {

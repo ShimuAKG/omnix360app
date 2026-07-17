@@ -7,4 +7,5 @@ export type AuthStackParams = {
 export type AppStackParams = {
   Conversas: undefined
   Chat: { conversaId: number; titulo: string }
+  NovaConversa: undefined
 }

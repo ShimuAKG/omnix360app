@@ -60,9 +60,14 @@ export default function ConversasScreen({
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={sair} hitSlop={10}>
-          <Text style={{ color: theme.textDim, fontSize: 14 }}>Sair</Text>
-        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18 }}>
+          <Pressable onPress={() => navigation.navigate('NovaConversa')} hitSlop={10}>
+            <Text style={{ color: theme.purpleNeon, fontSize: 15, fontWeight: '700' }}>+ Nova</Text>
+          </Pressable>
+          <Pressable onPress={sair} hitSlop={10}>
+            <Text style={{ color: theme.textDim, fontSize: 14 }}>Sair</Text>
+          </Pressable>
+        </View>
       ),
     })
   }, [navigation, sair])

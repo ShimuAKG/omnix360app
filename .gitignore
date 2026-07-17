@@ -7,3 +7,6 @@ web-build/
 .env
 android/
 ios/
+
+# Chave de serviço FCM (sensível — nunca commitar)
+fcm-service-account.json

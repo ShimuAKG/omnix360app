@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -41,9 +42,7 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<AuthS
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.brand}>
-        <Text style={styles.logo}>
-          OMNI<Text style={{ color: theme.purpleNeon }}>X360</Text>
-        </Text>
+        <Image source={require('../../assets/logo.png')} style={styles.logoImg} resizeMode="contain" />
         <Text style={styles.sub}>Atendimento</Text>
       </View>
 
@@ -95,7 +94,7 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<AuthS
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.bg, justifyContent: 'center', padding: 24 },
   brand: { alignItems: 'center', marginBottom: 36 },
-  logo: { color: theme.text, fontSize: 34, fontWeight: '800', letterSpacing: 0.5 },
+  logoImg: { width: 210, height: 78 },
   sub: {
     color: theme.textMuted,
     fontSize: 12,
