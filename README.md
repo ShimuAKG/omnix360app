@@ -1,4 +1,4 @@
-# OmniX Atendimento (app mobile)
+# OmniX360 (app mobile de atendimento)
 
 App nativo (iOS/Android) contendo **apenas o módulo de Atendimento** do OmniX360.
 Usa a mesma autenticação e a mesma segregação por função da plataforma web
