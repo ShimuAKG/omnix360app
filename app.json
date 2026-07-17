@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "OmniX Atendimento",
+    "slug": "omnix-atendimento",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "omnixatendimento",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0514"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.omnix360.atendimento"
+    },
+    "android": {
+      "package": "br.com.omnix360.atendimento",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0514"
+      }
+    },
+    "plugins": ["expo-secure-store", "expo-local-authentication", "expo-notifications"],
+    "extra": {
+      "apiBaseUrl": "https://builder.omnix360.com.br"
+    }
+  }
+}
